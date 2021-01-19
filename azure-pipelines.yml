@@ -4,6 +4,8 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
 variables:
+- group: databricks
+- group: data-platform-kv
 - name: ENVIRONMENT
   value: LOCALDEV
 - name: AZUREADID
