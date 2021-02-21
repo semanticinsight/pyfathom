@@ -9,12 +9,9 @@ from spores import Workspace, Jobs, DBFS
 from uuid import uuid4
 from pprint import pprint
 
-
-filename = "pyfathom-*-py3-none-any.whl"
 build_dir = sys.argv[3]
-deploy_dir = sys.argv[4] 
-
-
+deploy_dir = sys.argv[4]
+filename = sys.argv[5]
 
 wheels = DBFS.find_file('*.whl', build_dir)
 
