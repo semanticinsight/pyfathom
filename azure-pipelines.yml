@@ -30,7 +30,7 @@ steps:
 - script: |
     echo "y
     $(WORKSPACE-REGION-URL)
-    $(DATABRICKS-DEV)
+    $(DATABRICKS-PAT-TOKEN)
     $(TEST-CLUSTER-ID)
     $(WORKSPACE-ORG-ID)
     15001" | databricks-connect configure
@@ -48,26 +48,25 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/dist'
-    Contents: '**'
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: |
+      dist/**
+      deployment/**
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'dist'
+    ArtifactName: 'drop'
     publishLocation: 'Container'
   displayName: 'Publish Build Artefacts'
 
 - task: TwineAuthenticate@0
   inputs:
-    artifactFeeds: 'ClientDemonstration/ClientDemonstration'
+    artifactFeeds: 'sibytes'
   displayName: 'Authenticate Twine'
 
 - script: |
-    twine upload -r ClientDemonstration/ClientDemonstration --config-file $(PYPIRC_PATH) $(Build.SourcesDirectory)/dist/*
-  continueOnError: false
-  displayName: 'Publish to Artefact Store'
-
-
-
+    twine upload -r sibytes --config-file $(PYPIRC_PATH) $(Build.SourcesDirectory)/dist/*
+  continueOnError: true
+  displayName: 'Publish to Databricks Artefact Store'
