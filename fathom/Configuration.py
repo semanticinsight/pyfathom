@@ -1,9 +1,8 @@
 import os
-import re
-from .SparkContext import getSparkSession, getLogger, getDbutils
+from .SparkContext import get_spark_session, get_logger, get_dbutils
 
 
-def _getEnv(variable:str): 
+def _get_env(variable:str): 
 
     var = os.getenv(variable)
 
@@ -12,110 +11,106 @@ def _getEnv(variable:str):
 
     else:
         msg = f"Environment variable '{variable}' not found"
-        logger = getLogger()
-        logger.logError(msg)
+        logger = get_logger()
+        logger.log_error(msg)
 
         raise Exception(msg)    
 
 
-def getDbUtilsToken(): 
+def get_oauth_refresh_url():
 
-    return _getEnv("DBUTILSTOKEN")
-
-
-def getOAuthRefreshUrl():
-
-    return f"https://login.microsoftonline.com/{getAzureADId()}/oauth2/token"  
+    return f"https://login.microsoftonline.com/{get_azure_ad_id()}/oauth2/token"  
 
 
-def getStorageAccount():
+def get_storage_account():
 
-    return _getEnv("DATALAKESTORAGEACCOUNT")
-
-
-def getEnvironment():
-
-    return _getEnv("ENVIRONMENT")
+    return _get_env("STORAGEACCOUNT")
 
 
-def getAzureADId():
+def get_environment():
 
-    return _getEnv("AZUREADID")
-
-
-def getAutomationScope():
-
-    return _getEnv("AUTOMATIONSCOPE")
+    return _get_env("ENVIRONMENT")
 
 
-def getDataLakeStorageType(): 
+def get_azure_ad_id():
 
-    return _getEnv("DATALAKESTORAGE") 
-
-
-def getResourceGroup(): 
-
-    return _getEnv("RESOURCEGROUP") 
+    return _get_env("AZUREADID")
 
 
-def getSubscriptionId(): 
+def get_automation_scope():
 
-    return _getEnv("SUBSCRIPTIONID") 
+    return _get_env("AUTOMATIONSCOPE")
 
 
-def _getDbUtilsSecret(key:str): 
+def get_dataLake_storage_type(): 
 
-    dbutils = getDbutils(getEnvironment())
+    return _get_env("STORAGE") 
+
+
+def get_resource_group(): 
+
+    return _get_env("RESOURCEGROUP") 
+
+
+def get_subscription_id(): 
+
+    return _get_env("SUBSCRIPTIONID") 
+
+
+def _get_dbutils_secret(key:str): 
+
+    dbutils = get_dbutils(get_environment())
 
     secret = dbutils.secrets.get(
-        scope = getAutomationScope(), 
-        key = _getEnv(key))
+        scope = get_automation_scope(), 
+        key = _get_env(key))
         
     return secret
 
 
-def getServicePrincipalId():
+def get_service_principal_id():
 
-    return _getDbUtilsSecret("DATALAKESPNAPPID")
-
-
-def getServiceObjectId():
-
-    return _getDbUtilsSecret("DATALAKESPNOBJECTID")
+    return _get_dbutils_secret("DATAPLATFORMAPPID")
 
 
-def getServiceCredential():
+def get_service_credential():
 
-    return _getDbUtilsSecret("DATALAKESPNCREDENTIAL")   
-
-
-def getDatalakeConnectionString():
-
-    return _getDbUtilsSecret("DATALAKECONNECTIONSTRING")  
+    return _get_dbutils_secret("DATAPLATFORMSECRET")   
 
 
-def stripMargin(text):
-
-    return re.sub('\n[ \t]*\|', '\n', text)
 
 
-def help():
-
+def help(as_html=False):
+    
+    if as_html:
       return f"""
       <p>Configuration:</p>
       <table>
       <tr><th align='left'>Function          </th><th align='left'> Value               </td></tr>
-      <tr><td>getEnvironment()               </td><td> {getEnvironment()}               </td></tr>
-      <tr><td>getStorageAccount()            </td><td> {getStorageAccount()}            </td></tr>
-      <tr><td>getDataLakeStorageType()       </td><td> {getDataLakeStorageType()}       </td></tr>
-      <tr><td>getAutomationScope()           </td><td> {getAutomationScope()}           </td></tr>
-      <tr><td>getResourceGroup()             </td><td> {getResourceGroup()}             </td></tr>
-      <tr><td>getAzureADId()                 </td><td> {getAzureADId()}                 </td></tr>
-      <tr><td>getSubscriptionId()            </td><td> {getSubscriptionId()}            </td></tr>
-      <tr><td>getOAuthRefreshUrl()           </td><td> {getOAuthRefreshUrl()}           </td></tr>
-      <tr><td>getServicePrincipalId()        </td><td> {getServicePrincipalId()}        </td></tr>
-      <tr><td>getServiceObjectId()           </td><td> {getServiceObjectId()}           </td></tr>
-      <tr><td>getServiceCredential()         </td><td> {getServiceCredential()}         </td></tr>
-      <tr><td>getDatalakeConnectionString()  </td><td> {getDatalakeConnectionString()}  </td></tr>
+      <tr><td>get_environment()              </td><td> {get_environment()}              </td></tr>
+      <tr><td>get_storage_account()          </td><td> {get_storage_account()}          </td></tr>
+      <tr><td>get_dataLake_storage_type()    </td><td> {get_dataLake_storage_type()}       </td></tr>
+      <tr><td>get_automation_scope()         </td><td> {get_automation_scope()}           </td></tr>
+      <tr><td>get_resource_group()           </td><td> {get_resource_group()}             </td></tr>
+      <tr><td>get_azure_ad_id()              </td><td> {get_azure_ad_id()}              </td></tr>
+      <tr><td>get_subscription_id()          </td><td> {get_subscription_id()}            </td></tr>
+      <tr><td>get_oauth_refresh_url()        </td><td> {get_oauth_refresh_url()}        </td></tr>
+      <tr><td>get_service_principal_id()     </td><td> {get_service_principal_id()}        </td></tr>
+      <tr><td>get_service_credential()       </td><td> {get_service_credential()}         </td></tr>
       </table>
       """
+    else:
+        print(f"""
+Configuration:
+--------------------------------------------------------
+get_environment()           : {get_environment()} 
+get_storage_account()       : {get_storage_account()}        
+get_dataLake_storage_type() : {get_dataLake_storage_type()}     
+get_automation_scope()      : {get_automation_scope()}        
+get_resource_group()        : {get_resource_group()}          
+get_azure_ad_id()           : {get_azure_ad_id()}            
+get_subscription_id()       : {get_subscription_id()}          
+get_oauth_refresh_url()     : {get_oauth_refresh_url()}      
+get_service_principal_id()  : {get_service_principal_id()}       
+get_service_credential()    : [REDACTED]  
+        """)

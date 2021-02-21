@@ -4,12 +4,12 @@ from pyspark.dbutils import DBUtils
 from .Logger import Logger
 
 
-def createSparkSession():
+def create_spark_session():
 
     _spark = SparkSession\
     .builder\
     .master("local")\
-    .appName("Fathom.Configuration")\
+    .appName("fathom.Configuration")\
     .getOrCreate()
 
     _logOverride = os.getenv("LOGGINGLEVELOVERRIDE") 
@@ -17,52 +17,51 @@ def createSparkSession():
     if _logOverride:
         _spark.sparkContext.setLogLevel(_logOverride)
 
-    def _createSparkSession():
+    def _create_spark_session():
       return _spark
 
-    return _createSparkSession
+    return _create_spark_session
 
 
-def createLogger(printEnabled:bool=True):
+def create_logger(printEnabled:bool=True):
 
-    _spark = createSparkSession()()
+    _spark = create_spark_session()()
     _logger = Logger(_spark, printEnabled)
 
-    def _createLogger():
+    def _create_logger():
       return _logger
     
-    return _createLogger
+    return _create_logger
 
 
-def createDbutils(environment:str, sparkSession:SparkSession):
+def create_dbutils(environment:str):
 
     if (environment == "LOCALDEV"):
 
-        dbutils = DBUtils(sparkSession)
+        # unfortunately the remote local runtime works differently using DBUtils than it does cluster side
+        # so we have to detect the environment when running on db-connect locally to set the token and
+        # dbutils accordingly - this handles local remote and cluster side execution.
+        _dbutils = DBUtils(get_spark_session())
+        _dbutils.secrets.setToken(os.getenv("DBUTILSTOKEN"))
 
     else:
         import IPython
-        dbutils = IPython.get_ipython().user_ns["dbutils"]
+        _dbutils = IPython.get_ipython().user_ns["dbutils"]
 
-    return dbutils
-
-
-def getLogger(printEnabled:bool=True):
-  return createLogger(printEnabled)()
-
-
-def getSparkSession():
-  return createSparkSession()()
+    def _create_dbutils():
+        return _dbutils
+        
+    return _create_dbutils
 
 
-def getDbutils(environment:str):
+def get_logger(printEnabled:bool=True):
+  return create_logger(printEnabled)()
+
+
+def get_spark_session():
+  return create_spark_session()()
+
+
+def get_dbutils(environment:str):
   
-    if (environment == "LOCALDEV"):
-
-        dbutils = DBUtils(getSparkSession())
-
-    else:
-        import IPython
-        dbutils = IPython.get_ipython().user_ns["dbutils"]
-
-    return dbutils
+    return create_dbutils(environment)()

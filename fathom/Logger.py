@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 import os
+import re
 
 class Logger:
 
@@ -14,16 +15,21 @@ class Logger:
         if self.logLevelOverride:
             self.printEnabled = True
 
-    def logInfo(self, message:str):
+    def log_info(self, message:str):
 
         if (self.printEnabled):
-            print(message)
+            print(self._strip_margin(message))
 
         self._logger.info(message)      
 
-    def logError(self, message:str):
+    def log_error(self, message:str):
 
         if (self.printEnabled):
-            print(message)
+            print(self._strip_margin(message))
 
         self._logger.error(message)
+
+
+    def _strip_margin(self, text):
+
+        return re.sub('\n[ \t]*\|', '\n', text)
