@@ -4,7 +4,7 @@ import os, fnmatch, sys
 os.environ["DATABRICKS_API_HOST"] = sys.argv[1]
 os.environ["DBUTILSTOKEN"] = sys.argv[2]
 
-from spores import Workspace, Jobs, DBFS
+from spores import Workspace, Jobs, Dbfs
 from uuid import uuid4
 from pprint import pprint
 
