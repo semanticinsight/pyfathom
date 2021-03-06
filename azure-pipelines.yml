@@ -36,10 +36,10 @@ steps:
     15001" | databricks-connect configure
   displayName: 'Configure DBConnect'
 
-- script: |
-    pip install --editable .
-    pytest
-  displayName: 'Unit Tests'
+# - script: |
+#     pip install --editable .
+#     pytest
+#   displayName: 'Unit Tests'
 
 - script: |
     python setup.py sdist bdist_wheel

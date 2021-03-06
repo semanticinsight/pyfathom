@@ -6,7 +6,7 @@ HERE = pathlib.Path(__file__).parent
 
 # The text of the README file
 README = (HERE / "README.md").read_text()
-DATABRICKS_RUNTIME="dbr7.1"
+DATABRICKS_RUNTIME="dbr7.3"
 
 # This call to setup() does all the work
 setup(
