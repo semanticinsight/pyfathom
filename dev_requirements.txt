@@ -1,3 +1,5 @@
 pytest==6.2.2
 pytest-env==0.6.2
 setuptools-git-versioning==1.2.10
+wheel
+setuptools

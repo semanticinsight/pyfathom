@@ -3,7 +3,6 @@ import os, fnmatch, sys
 
 os.environ["DATABRICKS_API_HOST"] = sys.argv[1]
 os.environ["DBUTILSTOKEN"] = sys.argv[2]
-print(os.getcwd())
 
 from spores import Workspace, Jobs, DBFS
 from uuid import uuid4
