@@ -1,6 +1,6 @@
 import pathlib
 from setuptools import setup
-from setuptools_databricks import DatabricksBuild
+from setuptools_databricks.DatabricksBuild import DatabricksBuild
 import os
 
 # The directory containing this file
