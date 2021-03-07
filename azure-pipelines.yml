@@ -43,7 +43,7 @@ steps:
 
 - script: |
     python setup.py sdist bdist_wheel
-    ls dist/
+    python setup.py build_databricks_project
   displayName: 'Artifact creation'
 
 - task: CopyFiles@2
@@ -52,6 +52,7 @@ steps:
     Contents: |
       dist/**
       deployment/**
+      databricks/dist/**
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
