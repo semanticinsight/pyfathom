@@ -37,5 +37,9 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     packages=["fathom"],
+    install_requires=[
+          'requests',
+          'PyYAML'
+      ],
     zip_safe=False
 )
